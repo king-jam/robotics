@@ -1,0 +1,4 @@
+BatteryMonitor	KEYWORD1
+read	KEYWORD2
+calibrate	KEYWORD2
+lastValue	KEYWORD2
