@@ -73,7 +73,8 @@ void DCMotor::pwmAdjust(byte val)
 
 void DCMotor::setLimits(byte low, byte high)
 {
-	//stuff
+	lowLimit = low;
+	highLimit = high;
 }
 
 byte DCMotor::currentSpeed()
