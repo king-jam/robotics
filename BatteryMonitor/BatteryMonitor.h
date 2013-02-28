@@ -1,7 +1,9 @@
 /*
   BatteryMonitor.h - Library for monitoring battery voltage.
   Created by James King, February 27, 2013
-  Released into the public domain.
+  
+  This class uses a voltage divider shunt on an Arduino analog
+  pin to measure a battery voltage.
 */
 
 #ifndef BatteryMonitor_h
