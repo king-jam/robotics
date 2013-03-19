@@ -41,29 +41,19 @@ void DCMotor::stop_fast()
 	//stuff
 }
 
-void DCMotor::coast()
-{
-	//stuff
-}
-
 void DCMotor::forward(byte speed)
 {
-	//stuff
+	byte value;
+	//enable pin stuff
+	map(speed, 0, 100, lowLimit, highLimit);
+	analogWrite(pwmPin, speed + adjustPWM + calibratePWM);
 }
 
 void DCMotor::back(byte speed)
 {
-	//stuff
-}
-
-void DCMotor::forwardX(byte dist)
-{
-	//stuff
-}
-
-void DCMotor::backX(byte dist)
-{
-	//stuff
+	byte value;
+	map(speed, 0, 100, lowLimit, highLimit);
+	analog
 }
 
 void DCMotor::pwmAdjust(byte val)
