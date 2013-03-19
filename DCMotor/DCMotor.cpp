@@ -5,69 +5,90 @@
 
 #include "DCMotor.h"
 
-//constructor	-  PWM Pin - H-Bridge I1 - H-Bridge I2 - Wheel Radius - Low PWM Limit - High PWM Limit
-DCMotor::DCMotor(byte pin, byte i1Pin, byte i2Pin, byte wheelRadius, byte limitLow, byte limitHigh)
+//constructor	- PWM Pin - H-Bridge I1 - H-Bridge I2 - Low PWM Limit - High PWM Limit
+DCMotor::DCMotor(byte pin, byte i1Pin, byte i2Pin, byte limitLow, byte limitHigh)
 {
 	pinMode(pin,OUTPUT);
-	pwmPin = pin;
-	wheelRadius = wheelRadius;
-	highLimit = limitHigh;
-	lowLimit = limitLow;
- 	currentSpeed = 0;
-	currentPWM = 0;
-	calibratePWM = 0;
-	adjustPWM = 0;
+	pinMode(i1Pin,OUTPUT);
+	pinMode(i2Pin,OUTPUT);
+	m_pwmPin = pin;
+	m_i1Pin = i1Pin;
+	m_i2Pin = i2Pin;
+	m_highLimit = limitHigh;
+	m_lowLimit = limitLow;
+ 	m_currentSpeed = 0;
+	m_currentPWM = 0;
+	m_calibratePWM = 0;
+	m_adjustPWM = 0;
+	m_isForward = 0;
+	m_isReverse = 0;
 }
 
 //destructor, probably not needed
 DCMotor::~DCMotor()
 {
- 	currentSpeed = 0;
-	currentPWM = 0;
-	adjustPWM = 0;
-	calibratePWM = 0;
-	wheelRadius = 0;
-	lowLimit = 0;
-	highLimit = 0;
+ 	m_currentSpeed = 0;
+	m_adjustPWM = 0;
+	m_calibratePWM = 0;
+	m_lowLimit = 0;
+	m_highLimit = 0;
+	m_isForward = 0;
+	m_isReverse = 0;
 }
 
 void DCMotor::stop_slow()
 {
-	//stuff
+	analogWrite(m_pwmPin, 0);
 }
 
 void DCMotor::stop_fast()
 {
-	//stuff
+	analogWrite(m_pwmPin,0);
+	digitalWrite(m_i1Pin,0);
+	digitalWrite(m_i2Pin,0);
 }
 
-void DCMotor::forward(byte speed)
-{
+void DCMotor::setSpeed(byte speed){
 	byte value;
-	//enable pin stuff
-	map(speed, 0, 100, lowLimit, highLimit);
-	analogWrite(pwmPin, speed + adjustPWM + calibratePWM);
+	value = map(speed, 0, 100, m_lowLimit, m_highLimit);
+	m_currentSpeed = value;
+	analogWrite(m_pwmPin, speed + m_adjustPWM + m_calibratePWM);
 }
 
-void DCMotor::back(byte speed)
-{
-	byte value;
-	map(speed, 0, 100, lowLimit, highLimit);
-	analog
+void DCMotor::setForward(){
+	digitalWrite(m_i1Pin,0);
+	digitalWrite(m_i2Pin,1);
+	m_isForward = 1;
+	m_isReverse = 0;
 }
 
-void DCMotor::pwmAdjust(byte val)
+void DCMotor::setReverse(){
+	digitalWrite(m_i1Pin,1);
+	digitalWrite(m_i2Pin,0);
+	m_isReverse = 1;
+	m_isForward = 0;
+}
+
+void DCMotor::pwmAdjust(byte value)
 {
-	//stuff
+	m_pwmAdjust = value;
 }
 
 void DCMotor::setLimits(byte low, byte high)
 {
-	lowLimit = low;
-	highLimit = high;
+	m_lowLimit = low;
+	m_highLimit = high;
+}
+
+byte DCMotor::getHighLimit(){
+	return m_highLimit;
+}
+
+byte DCMotor::getLowLimit(){
+	return m_lowLimit;
 }
 
 byte DCMotor::currentSpeed()
 {
-	//stuff
+	return m_currentSpeed;
 }

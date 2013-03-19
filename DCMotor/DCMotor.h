@@ -11,27 +11,29 @@
 class DCMotor
 {
   public:
-    DCMotor(byte pin, byte i1Pin, byte i2Pin, byte wheelRadius, byte limitHigh, byte limitLow);
+    DCMotor(byte pin, byte i1Pin, byte i2Pin, byte limitHigh, byte limitLow);
 	~DCMotor();
     void stop_slow();
 	void stop_fast();
-	void coast();
-	void forward(byte speed);
-	void back(byte speed);
-	void forwardX(byte dist);
-	void backX(byte dist);
+	void setForward();
+	void setReverse();
+	void setSpeed(byte speed);
 	void pwmAdjust(byte val);
 	void setLimits(byte low, byte high);
+	byte getHighLimit();
+	byte getLowLimit();
 	byte currentSpeed();
+	bool m_isForward;
+	bool m_isReverse;
   private:
-	byte pwmPin;
- 	byte currentSpeed;
-	byte currentPWM;
-	byte adjustPWM;
-	byte calibratePWM;
-	byte wheelRadius;
-	byte highLimit;
-	byte lowLimit;
+	byte m_pwmPin;
+	byte m_i1Pin;
+	byte m_i2Pin;
+ 	byte m_currentSpeed;
+	byte m_adjustPWM;
+	byte m_calibratePWM;
+	byte m_highLimit;
+	byte m_lowLimit;
 };
 
 #endif
