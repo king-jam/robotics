@@ -23,12 +23,12 @@ GND - GND
 9 - NC
 10 - NC
 11 - Battery ADC Monitor (1/2 voltage divider - 0-10V range)
-12 - Left Motor High
-13 - Left Motor Low
-14 - Left Motor PWM
-15 - Right Motor PWM
-16 - Right Motor Low
-17 - Right Motor High
+12 - Right Motor High
+13 - Right Motor Low
+14 - Right Motor PWM
+15 - Left Motor PWM
+16 - Left Motor Low
+17 - Left Motor High
 18 - NC
 19 - NC
 20 - NC
