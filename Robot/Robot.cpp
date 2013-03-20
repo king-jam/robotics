@@ -12,16 +12,11 @@ Robot::Robot() :
 	m_frontPing(F_PING),
 	m_rightFrontPing(RF_PING),
 	m_rightBackPing(RB_PING),
-	m_batteryMonitor(BAT_MON,220000,100000){}
+	m_batteryMonitor(BAT_MON,220000,100000)
+	{
+	TCCR1B = TCCR1B & 0b11111000 | 0x01; //set div 1 prescalar for motors
+	}
 
 Robot::~Robot(){
 	
-}
-
-void Robot::set(){
-
-}
-
-void WallFollower::stop(){
-
 }

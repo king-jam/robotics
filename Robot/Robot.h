@@ -7,9 +7,9 @@
 #define Robot_h
 
 #include "WProgram.h"
-#include "DCMotor.h"
-#include "Ping.h"
-#include "BatteryMonitor.h"
+#include <DCMotor.h>
+#include <Ping.h>
+#include <BatteryMonitor.h>
 
 #define R_MOTOR_PWM 14
 #define R_MOTOR_I1 12
@@ -17,18 +17,16 @@
 #define L_MOTOR_PWM 15
 #define L_MOTOR_I1 17
 #define L_MOTOR_I2 16
-#define F_PING 
-#define RF_PING
-#define RB_PING
-#define BAT_MON
+#define F_PING 1
+#define RF_PING 2
+#define RB_PING 3
+#define BAT_MON 4
 
 class Robot
 {
   public:
     Robot();
 	~Robot();
-    void start();
-	void stop();
 	DCMotor m_rightMotor;
 	DCMotor m_leftMotor;
 	Ping m_frontPing;

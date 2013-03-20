@@ -50,8 +50,6 @@ void DCMotor::stop_fast()
 void DCMotor::setSpeed(byte speed){
 	byte value;
 	value = map(speed, 0, 100, m_lowLimit, m_highLimit);
-	Serial.print("Value: ");
-	Serial.println(value);
 	m_currentSpeed = value;
 	analogWrite(m_pwmPin, value + m_adjustPWM + m_calibratePWM);
 }
