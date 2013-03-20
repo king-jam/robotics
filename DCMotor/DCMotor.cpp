@@ -17,7 +17,6 @@ DCMotor::DCMotor(byte pin, byte i1Pin, byte i2Pin, byte limitLow, byte limitHigh
 	m_highLimit = limitHigh;
 	m_lowLimit = limitLow;
  	m_currentSpeed = 0;
-	m_currentPWM = 0;
 	m_calibratePWM = 0;
 	m_adjustPWM = 0;
 	m_isForward = 0;
@@ -44,34 +43,36 @@ void DCMotor::stop_slow()
 void DCMotor::stop_fast()
 {
 	analogWrite(m_pwmPin,0);
-	digitalWrite(m_i1Pin,0);
-	digitalWrite(m_i2Pin,0);
+	digitalWrite(m_i1Pin,HIGH);
+	digitalWrite(m_i2Pin,HIGH);
 }
 
 void DCMotor::setSpeed(byte speed){
 	byte value;
 	value = map(speed, 0, 100, m_lowLimit, m_highLimit);
+	Serial.print("Value: ");
+	Serial.println(value);
 	m_currentSpeed = value;
-	analogWrite(m_pwmPin, speed + m_adjustPWM + m_calibratePWM);
+	analogWrite(m_pwmPin, value + m_adjustPWM + m_calibratePWM);
 }
 
 void DCMotor::setForward(){
-	digitalWrite(m_i1Pin,0);
-	digitalWrite(m_i2Pin,1);
+	digitalWrite(m_i1Pin,LOW);
+	digitalWrite(m_i2Pin,HIGH);
 	m_isForward = 1;
 	m_isReverse = 0;
 }
 
 void DCMotor::setReverse(){
-	digitalWrite(m_i1Pin,1);
-	digitalWrite(m_i2Pin,0);
+	digitalWrite(m_i1Pin,HIGH);
+	digitalWrite(m_i2Pin,LOW);
 	m_isReverse = 1;
 	m_isForward = 0;
 }
 
 void DCMotor::pwmAdjust(byte value)
 {
-	m_pwmAdjust = value;
+	m_adjustPWM = value;
 }
 
 void DCMotor::setLimits(byte low, byte high)
