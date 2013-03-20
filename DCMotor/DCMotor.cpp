@@ -50,8 +50,9 @@ void DCMotor::stop_fast()
 void DCMotor::setSpeed(byte speed){
 	byte value;
 	value = map(speed, 0, 100, m_lowLimit, m_highLimit);
+	value = value + m_adjustPWM + m_calibratePWM;
 	m_currentSpeed = value;
-	analogWrite(m_pwmPin, value + m_adjustPWM + m_calibratePWM);
+	analogWrite(m_pwmPin, value);
 }
 
 void DCMotor::setForward(){
