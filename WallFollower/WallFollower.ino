@@ -15,6 +15,7 @@ byte RF_PING=11;
 byte RB_PING=1;
 byte BAT_MON=21;
 
+//f it, we'll do it live!
 //pid variables
 //double difference = 0;
 //double setPoint = 0;
@@ -33,12 +34,12 @@ Ping f_ping = Ping(F_PING);
 Ping rf_ping = Ping(RF_PING);
 Ping rb_ping = Ping(RB_PING);
 BatteryMonitor batmon = BatteryMonitor(BAT_MON,220000,100000);
-//PID myPID(&difference, &correction, &setPoint, 10, .2, 1, DIRECT);
+//PID myPID(&difference, &correction, &setPoint, 10, .2, 1, DIRECT); //f it, we'll do it live!
 
 void setup() {
   Serial.begin(9600);
   TCCR1B = TCCR1B & 0b11111000 | 0x01; //set div 1 prescalar for motors
-  //myPID.SetMode(AUTOMATIC);
+  //myPID.SetMode(AUTOMATIC); //f it, we'll do it live!
   //myPID.SetOutputLimits(-targetSpeed*4,targetSpeed*4);
   right.setSpeed(targetSpeed);
   left.setSpeed(targetSpeed);
@@ -51,15 +52,15 @@ void loop() {
   rf_ping.fire();
   f_ping.fire();
   rb_ping.fire();
-  //difference = rf_ping.inches() - rb_ping.inches();
+  //difference = rf_ping.inches() - rb_ping.inches(); //f it, we'll do it live!
   Serial.print("Front: ");
   Serial.print(rf_ping.inches());
   Serial.print("  ");
   Serial.print("Back: ");
   Serial.print(rb_ping.inches());
   Serial.println();
-  Serial.print("Difference: ");
-  Serial.println(difference);
+  //Serial.print("Difference: "); //f it, we'll do it live!
+  //Serial.println(difference);
   if(f_ping.inches() < distance*2)
   {
     left.setReverse();
@@ -157,7 +158,7 @@ void loop() {
     left.setSpeed(targetSpeed);
     right.setSpeed(targetSpeed + targetSpeed);
   }*/
-  /*else{
+  /*else{ //f it, we'll do it live!
     myPID.Compute();
     Serial.print("Correction: ");
     Serial.println(correction);
