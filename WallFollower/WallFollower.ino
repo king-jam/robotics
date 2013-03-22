@@ -61,93 +61,88 @@ void loop() {
   Serial.println();
   //Serial.print("Difference: "); //f it, we'll do it live!
   //Serial.println(difference);
-  if(f_ping.inches() < distance*2)
+  if((f_ping.inches() > distance*2) && (rf_ping.inches() > distance*2) && (rb_ping.inches() > distance*2)) //about to hit a wall
+  {
+    left.setForward();
+    right.setForward();
+    right.setSpeed(targetSpeed);
+    left.setSpeed(targetSpeed);
+  }
+  else if(f_ping.inches() < distance*2) //about to hit a wall
   {
     left.setReverse();
     left.setSpeed(0);
     right.setSpeed(targetSpeed*1.5);
-    while(f_ping.inches() < distance*2)
+    while(f_ping.inches() < distance*3)
     {
       f_ping.fire();
     }
   }
-  else if((rf_ping.inches() > (distance*3)))
+  else if((rf_ping.inches() > (distance*2))) //wall disappears to the right
   {
+    //delay(250);
     left.setForward();
     right.setReverse();
     right.setSpeed(0);
-    left.setSpeed(targetSpeed*1.5);
+    left.setSpeed(targetSpeed*1.25);
   }
-  else if(rf_ping.inches() < distance/2)
+  else if(rf_ping.inches() < (distance*0.75)) //getting way too close to the wall
   {
     left.setReverse();
+    //left.setForward();
     right.setForward();
-    right.setSpeed(targetSpeed*1.5);
+    right.setSpeed(targetSpeed);
     left.setSpeed(0);
   }
-  else if((rf_ping.inches() > distance) && (rb_ping.inches() < distance))
+  else if((rf_ping.inches() > distance && rf_ping.inches() < distance*1.5) && (rb_ping.inches() < distance && rb_ping.inches() > distance/2)) //away from the wall but still around 6
+  {
+    left.setForward();
+    right.setForward();
+    left.setSpeed(targetSpeed*0.85);
+    right.setSpeed(targetSpeed*0.15);
+  }
+  else if((rf_ping.inches() < distance && rf_ping.inches() > distance/2) && (rb_ping.inches() > distance && rb_ping.inches() < distance*1.5))
+  {
+    left.setForward();
+    right.setForward();
+    right.setSpeed(targetSpeed*0.85);
+    left.setSpeed(targetSpeed*0.15);
+  }
+  else if((rf_ping.inches() > distance) && (rb_ping.inches() < distance/2)) //away from the wall but front too far
   {
     left.setForward();
     right.setForward();
     left.setSpeed(targetSpeed);
     right.setSpeed(targetSpeed*0.15);
   }
-  else if((rf_ping.inches() > distance+1) && (rb_ping.inches() < distance+1))
-  {
-    left.setForward();
-    right.setForward();
-    left.setSpeed(targetSpeed*1.25);
-    right.setSpeed(targetSpeed*0.15);
-  }
-  else if((rf_ping.inches() < distance) && (rb_ping.inches() < distance))
+  else if((rf_ping.inches() < distance/2) && (rb_ping.inches() > distance))
   {
     left.setForward();
     right.setForward();
     right.setSpeed(targetSpeed);
     left.setSpeed(targetSpeed*0.15);
   }
-  else if((rf_ping.inches() < distance-1) && (rb_ping.inches() < distance-1))
-  {
-    left.setForward();
-    right.setForward();
-    right.setSpeed(targetSpeed*1.25);
-    left.setSpeed(targetSpeed*0.15);
-  }
-  else if((rf_ping.inches() < distance) && (rb_ping.inches() > distance))
-  {
-    left.setForward();
-    right.setForward();
-    right.setSpeed(targetSpeed);
-    left.setSpeed(targetSpeed*0.15);
-  }
-  else if((rf_ping.inches() < distance-1) && (rb_ping.inches() > distance+1))
-  {
-    left.setForward();
-    right.setForward();
-    right.setSpeed(targetSpeed*1.5);
-    left.setSpeed(targetSpeed*0.15);
-  }
-  else if((rf_ping.inches() > distance) && (rb_ping.inches() > distance))
+  else if((rf_ping.inches() > distance) && (rb_ping.inches() > distance)) //way too far
   {
     left.setForward();
     right.setForward();
     right.setSpeed(targetSpeed*0.15);
     left.setSpeed(targetSpeed);
   }
-  else if((rf_ping.inches() > distance+1) && (rb_ping.inches() > distance+1))
+  else if((rf_ping.inches() < distance) && (rb_ping.inches() < distance)) //way too close
   {
     left.setForward();
     right.setForward();
-    right.setSpeed(targetSpeed*0.15);
-    left.setSpeed(targetSpeed*1.25);
+    right.setSpeed(targetSpeed);
+    left.setSpeed(targetSpeed*0.15);
   }
-  else
+  /*else
   {
     left.setForward();
     right.setForward();
     right.setSpeed(targetSpeed);
     left.setSpeed(targetSpeed);
-  }
+  }*/
   /*else if((rb_ping.inches() > 4) && (rf_ping.inches() > 4))
   {
     left.setSpeed(targetSpeed + targetSpeed);
