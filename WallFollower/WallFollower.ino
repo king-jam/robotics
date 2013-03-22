@@ -92,7 +92,7 @@ void loop() {
     //left.setForward();
     right.setForward();
     right.setSpeed(targetSpeed);
-    left.setSpeed(0);
+    left.setSpeed(targetSpeed*0.25);
   }
   else if((rf_ping.inches() > distance && rf_ping.inches() < distance*1.5) && (rb_ping.inches() < distance && rb_ping.inches() > distance/2)) //away from the wall but still around 6
   {
@@ -122,14 +122,14 @@ void loop() {
     right.setSpeed(targetSpeed);
     left.setSpeed(targetSpeed*0.15);
   }
-  else if((rf_ping.inches() > distance) && (rb_ping.inches() > distance)) //way too far
+  else if((rf_ping.inches() > distance + 1) && (rb_ping.inches() > distance + 1)) //way too far
   {
     left.setForward();
     right.setForward();
     right.setSpeed(targetSpeed*0.15);
     left.setSpeed(targetSpeed);
   }
-  else if((rf_ping.inches() < distance) && (rb_ping.inches() < distance)) //way too close
+  else if((rf_ping.inches() < distance - 1) && (rb_ping.inches() < distance - 1)) //way too close
   {
     left.setForward();
     right.setForward();
