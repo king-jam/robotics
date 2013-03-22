@@ -24,7 +24,7 @@ byte BAT_MON=21;
 //double consKp=1, consKi=0.05, consKd=0.25;
 
 //global variables
-double targetSpeed = 20;
+double targetSpeed = 10;
 double distance = 6;
 
 //class constructors
@@ -72,10 +72,17 @@ void loop() {
   {
     left.setReverse();
     left.setSpeed(0);
-    right.setSpeed(targetSpeed*1.5);
+    right.setSpeed(targetSpeed*1.75);
     while(f_ping.inches() < distance*3)
     {
       f_ping.fire();
+    }
+    rf_ping.fire();
+    rb_ping.fire();
+    while(rb_ping.inches() > rf_ping.inches())
+    {
+     rb_ping.fire();
+     rf_ping.fire(); 
     }
   }
   else if((rf_ping.inches() > (distance*2))) //wall disappears to the right
