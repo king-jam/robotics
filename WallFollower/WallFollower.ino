@@ -1,6 +1,5 @@
 #include <DCMotor.h>
 #include <Ping.h>
-#include <BatteryMonitor.h>
 
 //pin defs
 byte R_MOTOR_PWM=14;
@@ -12,7 +11,6 @@ byte L_MOTOR_I2=16;
 byte F_PING=0;
 byte RF_PING=11;
 byte RB_PING=1;
-byte BAT_MON=21;
 
 //global variables
 double targetSpeed = 10;
@@ -24,7 +22,6 @@ DCMotor left = DCMotor(L_MOTOR_PWM, L_MOTOR_I1, L_MOTOR_I2, 165, 255);
 Ping f_ping = Ping(F_PING);
 Ping rf_ping = Ping(RF_PING);
 Ping rb_ping = Ping(RB_PING);
-BatteryMonitor batmon = BatteryMonitor(BAT_MON,220000,100000);
 
 void setup() {
   Serial.begin(9600);
