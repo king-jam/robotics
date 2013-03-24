@@ -1,7 +1,6 @@
 #include <DCMotor.h>
 #include <Ping.h>
 #include <BatteryMonitor.h>
-//#include <PID_v1.h>
 
 //pin defs
 byte R_MOTOR_PWM=14;
@@ -15,16 +14,8 @@ byte RF_PING=11;
 byte RB_PING=1;
 byte BAT_MON=21;
 
-//f it, we'll do it live!
-//pid variables
-//double difference = 0;
-//double setPoint = 0;
-//double correction = 0;
-//double aggKp=4, aggKi=0.2, aggKd=1;
-//double consKp=1, consKi=0.05, consKd=0.25;
-
 //global variables
-double targetSpeed = 14;
+double targetSpeed = 10;
 double distance = 6;
 
 //class constructors
@@ -34,13 +25,10 @@ Ping f_ping = Ping(F_PING);
 Ping rf_ping = Ping(RF_PING);
 Ping rb_ping = Ping(RB_PING);
 BatteryMonitor batmon = BatteryMonitor(BAT_MON,220000,100000);
-//PID myPID(&difference, &correction, &setPoint, 10, .2, 1, DIRECT); //f it, we'll do it live!
 
 void setup() {
   Serial.begin(9600);
   TCCR1B = TCCR1B & 0b11111000 | 0x01; //set div 1 prescalar for motors
-  //myPID.SetMode(AUTOMATIC); //f it, we'll do it live!
-  //myPID.SetOutputLimits(-targetSpeed*4,targetSpeed*4);
   right.setSpeed(targetSpeed);
   left.setSpeed(targetSpeed);
   right.setForward();
@@ -49,18 +37,11 @@ void setup() {
 
 void loop() {
   int temp=0;
+  
   rf_ping.fire();
   f_ping.fire();
   rb_ping.fire();
-  //difference = rf_ping.inches() - rb_ping.inches(); //f it, we'll do it live!
-  Serial.print("Front: ");
-  Serial.print(rf_ping.inches());
-  Serial.print("  ");
-  Serial.print("Back: ");
-  Serial.print(rb_ping.inches());
-  Serial.println();
-  //Serial.print("Difference: "); //f it, we'll do it live!
-  //Serial.println(difference);
+
   if((f_ping.inches() > distance*2) && (rf_ping.inches() > distance*2) && (rb_ping.inches() > distance*2)) //about to hit a wall
   {
     left.setForward();
@@ -143,38 +124,12 @@ void loop() {
     right.setSpeed(targetSpeed);
     left.setSpeed(targetSpeed*0.15);
   }
-  /*else
+  else
   {
     left.setForward();
     right.setForward();
-    right.setSpeed(targetSpeed);
-    left.setSpeed(targetSpeed);
-  }*/
-  /*else if((rb_ping.inches() > 4) && (rf_ping.inches() > 4))
-  {
-    left.setSpeed(targetSpeed + targetSpeed);
-    right.setSpeed(targetSpeed);    
+    right.setSpeed(targetSpeed/2);
+    left.setSpeed(targetSpeed/2);
   }
-  else if((rf_ping.inches() < 2) && (rb_ping.inches() < 2))
-  {
-    left.setSpeed(targetSpeed);
-    right.setSpeed(targetSpeed + targetSpeed);
-  }*/
-  /*else{ //f it, we'll do it live!
-    myPID.Compute();
-    Serial.print("Correction: ");
-    Serial.println(correction);
-    temp = targetSpeed - (int) correction;
-    Serial.print("Left: ");
-    Serial.print(temp);
-    Serial.print("  ");
-    left.setSpeed(temp);
-    temp = 0;
-    temp = targetSpeed + (int) correction;
-    Serial.print("Right: ");
-    Serial.print(temp);
-    Serial.println();
-    right.setSpeed(temp);
-  }*/
   delay(50);
 }
