@@ -2,6 +2,8 @@
 #include <Ping.h>
 #include <PID_v1.h>
 
+#define DEBUG 0
+
 //pin defs
 byte R_MOTOR_PWM=14;
 byte R_MOTOR_I1=12;
@@ -39,8 +41,8 @@ byte sensor_value = 0;
 byte last_value = 0;
 
 //class constructors
-DCMotor right = DCMotor(R_MOTOR_PWM, R_MOTOR_I1, R_MOTOR_I2, 165, 255);
-DCMotor left = DCMotor(L_MOTOR_PWM, L_MOTOR_I1, L_MOTOR_I2, 165, 255);
+DCMotor right = DCMotor(R_MOTOR_PWM, R_MOTOR_I1, R_MOTOR_I2, 155, 255);
+DCMotor left = DCMotor(L_MOTOR_PWM, L_MOTOR_I1, L_MOTOR_I2, 155, 255);
 Ping f_ping = Ping(F_PING);
 PID myPID(&difference, &correction, &setPoint, kp, ki, kd, DIRECT);
 
@@ -50,6 +52,7 @@ void setup() {
   myPID.SetMode(AUTOMATIC);
   irSensorSetup();
   myPID.SetOutputLimits(-targetSpeed*15,targetSpeed*15);
+  //myPID.SetOutputLimits(-targetSpeed*10,targetSpeed*10);
   right.setSpeed(targetSpeed);
   left.setSpeed(targetSpeed);
   right.setForward();
@@ -61,7 +64,7 @@ void loop() {
   byte sensor_value = 0;
   sensor_value = irSensorRead();
   Serial.print("Sensor_Value: ");
-  Serial.println(sensor_value);
+  Serial.println(sensor_value, BIN);
   irSensorHandler(sensor_value);
   /*Serial.println(digitalRead(IR_OUT0));
   Serial.println(digitalRead(IR_OUT1));
@@ -152,70 +155,90 @@ byte irSensorRead()
 
 void irSensorHandler(byte sensor)
 {
-  //byte sensor_invert=~sensor;
+  #if (DEBUG == 1)
+    Serial.print("Sensor Handler: ");
+  #endif
   switch(sensor)
   {
-    case B00011111:
-    case B00111111:
-    case B01111111:
-      difference = -10;
-      break;
-    case B00001111:
-      difference = -8;
-      break;
-    case B00000011:
-    case B00000001:
-    case B00000010:
-      Serial.println("Case 1");
-      difference = -6;
-      break;
-    case B00000111:
-    case B00000110:
-    case B00000100:
-      Serial.println("Case 2");
-      difference = -4;
-      break;
-    case B00001110:
-    case B00001100:
-      Serial.println("Case 3");
-      difference = -2;
-      break;
-    case B00011100:
-    case B00011000:
-    case B00111000:
-      Serial.println("Case 4");
+    case B00111100:
+    case B01111000:
+    case B00011110:
+    case B01111110:
+    case B00111110:
+    case B01111100:
+    case B11111111:
+      #if (DEBUG==1)
+      Serial.println("Straight");
+      #endif
       difference = 0;
-      break;
-    case B01110000:
-    case B00110000:
-      Serial.println("Case 5");
-      difference = 2;
-      break;
-    case B11100000:
-    case B01100000:
-    case B00100000:
-      Serial.println("Case 6");
-      difference = 4;
-      break;
-    case B11000000:
-    case B01000000:
-    case B10000000:
-      Serial.println("Case 7");
-      difference = 6;
-      break;
-    case B11110000:
-      difference = 8;
       break;
     case B11111000:
     case B11111100:
-    case B11111110:
-      difference = 10;
+      #if (DEBUG==1)
+      Serial.println("Right Small");
+      #endif
+      difference = 1;
+      break;
+    case B11110000:
+      #if (DEBUG==1)
+      Serial.println("Right Medium");
+      #endif
+      difference = 2;
+      break;
+    case B11100000:
+      #if (DEBUG==1)
+      Serial.println("Right Large");
+      #endif
+      difference = 3;
+      break;
+    case B11000000:
+      #if (DEBUG==1)
+      Serial.println("Right Hard");
+      #endif
+      difference = 4;
+      break;
+    case B10000000:
+      #if (DEBUG==1)
+      Serial.println("Right 90");
+      #endif
+      difference = 8;
+      break;
+    case B00011111:
+      #if (DEBUG==1)
+      Serial.println("Left Small");
+      #endif
+      difference = -1;
+      break;
+    case B00111111:
+      #if (DEBUG==1)
+      Serial.println("Left Medium");
+      #endif
+      difference = -2;
+      break;
+    case B00001111:
+      #if (DEBUG==1)
+      Serial.println("Left Large");
+      #endif
+      difference = -3;
+      break;
+    case B00000111:
+      #if (DEBUG == 1)
+      Serial.println("Left Hard");
+      #endif
+      difference = -4;
+      break;
+    case B00000011:
+      #if (DEBUG==1)
+      Serial.println("Left 90");
+      #endif
+      difference = -8;
       break;
     default:
-      Serial.println("Case 8");
-      difference = 0;
+      #if (DEBUG==1)
+      Serial.println("No Case");
+      #endif
+      difference = difference;
       break;
   }                                                                               
 }
-
 
