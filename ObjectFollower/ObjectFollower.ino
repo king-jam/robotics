@@ -28,12 +28,14 @@ double kp=0.2*ku;
 //double ki=(2*kp)/tu;
 double ki=0;
 //double kd=(kp*tu)/3;
-double kd=15;
+double kd=30;
 
 //global variables
-double targetSpeed = 13;
-double distance = 3;
+double targetSpeed = 11;
+double distance = 5.5;
+double sensitivity = 0.05;
 bool is_lost = false;
+bool use_pid = false;
 
 //class constructors
 DCMotor right = DCMotor(R_MOTOR_PWM, R_MOTOR_I1, R_MOTOR_I2, 155, 255);
@@ -54,32 +56,14 @@ void setup() {
 }
 
 void loop() {
-
-  l_ping.fire();
-  r_ping.fire();
   
-  // Both pings < distance, stop both motors until one ping is far enough away
-  if( l_ping.inches() < distance && r_ping.inches() < distance ) {
-    // Remain stopped while both pings < distance
-    while( l_ping.inches() < distance && r_ping.inches() < distance ) {
-      left.stop_fast();
-      right.stop_fast();
-      l_ping.fire();
-      r_ping.fire();
-    }
-    if( l_ping.inches() > distance && r_ping.inches() > distance ) {
-      left.setSpeed(targetSpeed);
-      right.setSpeed(targetSpeed);
-    } else if ( l_ping.inches() > distance ) {
-       left.setSpeed(targetSpeed); 
-    } else {
-       right.setSpeed(targetSpeed); 
-    }
-  } 
-  // Otherwise, let PID handle motor control
-  else {
+  if( use_pid) {
     myPID.Compute();
     difference = r_ping.inches() - l_ping.inches();
+    Serial.print("difference: ");
+    Serial.println(difference);
+    Serial.print("correction: ");
+    Serial.println(correction);
     int temp = targetSpeed - (int) correction;
     
     if(temp < 0)
@@ -107,5 +91,55 @@ void loop() {
       right.setForward();
     }
     right.setSpeed(temp); 
+  }
+  else {
+    // Both pings < distance, stop both motors until one ping is far enough away
+    bool l_stop = false;
+    bool r_stop = false;
+    l_ping.fire();
+    r_ping.fire();
+    Serial.print("L Inches: ");
+    Serial.println(l_ping.inches());
+    Serial.print("R Inches: ");
+    Serial.println(r_ping.inches());
+    
+    if( l_ping.inches() < distance ) {
+      Serial.println("LEFT STOP");
+      left.setReverse();
+      left.setSpeed(targetSpeed);
+      l_stop = true;
+    }
+    if( r_ping.inches() < distance ) {
+      Serial.println("RIGHT STOP");
+      right.setReverse(); 
+      right.setSpeed(targetSpeed);
+      r_stop = true;
+    }
+    if( !l_stop && !r_stop ) {
+      difference = r_ping.inches() - l_ping.inches();
+      Serial.print("Difference: ");
+      Serial.println(difference);
+      
+      float r_speed = targetSpeed * (1 + difference * sensitivity);
+      float l_speed = targetSpeed * (1 - difference * sensitivity);
+      
+      Serial.print("L Speed: ");
+      Serial.println(l_speed);
+      Serial.print("R Speed: ");
+      Serial.println(r_speed);
+      
+      right.setForward();
+      right.setSpeed(targetSpeed * (1 + difference * sensitivity) );
+      left.setForward();
+      left.setSpeed(targetSpeed * (1 - difference * sensitivity) );
+    }
+    else if( !l_stop && r_stop ) {
+      left.setForward();
+      left.setSpeed(targetSpeed);  
+    }
+    else if( l_stop && !r_stop ) {
+      right.setForward();
+      right.setSpeed(targetSpeed);
+    }
   }
 }                                                           
