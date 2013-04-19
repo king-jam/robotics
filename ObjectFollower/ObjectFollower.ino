@@ -33,7 +33,10 @@ double kd=30;
 //global variables
 double targetSpeed = 11;
 double distance = 5.5;
-double sensitivity = 0.05;
+double turn_sensitivity = 0.1;
+double dist_sensitivity = 0.2;
+double l_dist = 0;
+double r_dist = 0;
 bool is_lost = false;
 bool use_pid = false;
 
@@ -98,48 +101,52 @@ void loop() {
     bool r_stop = false;
     l_ping.fire();
     r_ping.fire();
-    Serial.print("L Inches: ");
-    Serial.println(l_ping.inches());
-    Serial.print("R Inches: ");
-    Serial.println(r_ping.inches());
     
-    if( l_ping.inches() < distance ) {
+    l_dist = l_ping.inches();
+    r_dist = r_ping.inches();
+    
+    Serial.print("L Dist: ");
+    Serial.println(l_dist);
+    Serial.print("R Dist: ");
+    Serial.println(r_dist);
+    
+    if( l_dist < distance ) {
       Serial.println("LEFT STOP");
       left.setReverse();
-      left.setSpeed(targetSpeed);
+      left.setSpeed(targetSpeed * (1 + (distance - l_dist) * dist_sensitivity*2));  // Increase sensitivity for reversing
       l_stop = true;
     }
-    if( r_ping.inches() < distance ) {
+    if( r_dist < distance ) {
       Serial.println("RIGHT STOP");
       right.setReverse(); 
-      right.setSpeed(targetSpeed);
+      right.setSpeed(targetSpeed * (1 + (distance - r_dist) * dist_sensitivity*2));  // Increase sensitivity for reversing
       r_stop = true;
     }
     if( !l_stop && !r_stop ) {
-      difference = r_ping.inches() - l_ping.inches();
+      difference = r_dist - l_dist;
       Serial.print("Difference: ");
       Serial.println(difference);
       
-      float r_speed = targetSpeed * (1 + difference * sensitivity);
-      float l_speed = targetSpeed * (1 - difference * sensitivity);
-      
+      float r_speed = targetSpeed * (1 + difference * turn_sensitivity) * (1 + r_dist * dist_sensitivity);
+      float l_speed = targetSpeed * (1 - difference * turn_sensitivity) * (1 + l_dist * dist_sensitivity);
+     
       Serial.print("L Speed: ");
       Serial.println(l_speed);
       Serial.print("R Speed: ");
       Serial.println(r_speed);
       
       right.setForward();
-      right.setSpeed(targetSpeed * (1 + difference * sensitivity) );
+      right.setSpeed(targetSpeed * (1 + difference * turn_sensitivity) * (1 + r_dist * dist_sensitivity) );
       left.setForward();
-      left.setSpeed(targetSpeed * (1 - difference * sensitivity) );
+      left.setSpeed(targetSpeed * (1 - difference * turn_sensitivity) * (1 + l_dist * dist_sensitivity) );
     }
     else if( !l_stop && r_stop ) {
       left.setForward();
-      left.setSpeed(targetSpeed);  
+      left.setSpeed(targetSpeed * (1 + l_dist * dist_sensitivity));  
     }
     else if( l_stop && !r_stop ) {
       right.setForward();
-      right.setSpeed(targetSpeed);
+      right.setSpeed(targetSpeed * (1 + r_dist * dist_sensitivity));
     }
   }
 }                                                           
