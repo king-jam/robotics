@@ -1,7 +1,5 @@
 eece4630
 ========
-NOTE: IF YOU WOULD LIKE TO USE THE CODE, REQUEST TO BE A COLLABORATOR. I WILL ADD ALL INDIVIDUALS WHO WANT TO ADD TO THIS CODE.
-
 EECE4630 Robotics Project
 
 Using Teensy 2.0 as main microcontroller with Ardiuno > 1.0.1 to create code.
